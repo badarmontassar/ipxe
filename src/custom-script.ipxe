@@ -1,0 +1,24 @@
+#!ipxe
+goto shell
+set net0/ip 10.180.255.155
+set net0/netmask 255.255.255.192
+set net0/gateway 10.180.255.129
+ifopen net0
+menu
+item --gap -- ---------------- iPXE boot menu ----------------
+item netboot    Boot from http
+item shell      Shell
+choose --default netboot --timeout 30000 target && goto ${target}
+
+:netboot
+kernel http://10.180.255.161/esx/mboot.c32 -c http://10.180.255.161/esx/boot.cfg
+boot
+
+:sanboot
+sanboot http://10.180.255.161/esxsoft321.vmware.cosng.net.iso ||
+echo failed to load iso
+goto MENU
+
+:shell
+shell ||
+goto MENU
